@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n-title="projects.title">项目</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/polaris-logo.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="lp-page">
+    <div class="lp-app">
+      <aside class="lp-sidebar">
+        <a class="lp-brand" href="/dashboard.html" data-site-brand>
+          <img data-site-icon alt="" />
+          <span class="lp-brand-name" data-site-name>Polar-</span>
+        </a>
+        <nav class="lp-nav">
+          <a class="lp-nav-item" href="/dashboard.html">
+            <span class="lp-nav-icon" data-icon="layout-dashboard">⊞</span><span>Dashboard</span>
+          </a>
+          <a class="lp-nav-item" href="/teams.html">
+            <span class="lp-nav-icon" data-icon="users-round">⌂</span><span data-i18n="nav.teams">工作区</span>
+          </a>
+          <a class="lp-nav-item active" href="/projects.html">
+            <span class="lp-nav-icon" data-icon="folder-kanban">✦</span><span data-i18n="nav.projects">项目</span>
+          </a>
+          <a class="lp-nav-item" href="/posts.html">
+            <span class="lp-nav-icon" data-icon="message-square">◎</span><span>Posts</span>
+          </a>
+          <a class="lp-nav-item" href="/markdowns.html">
+            <span class="lp-nav-icon" data-icon="file-text">◈</span><span>Markdowns</span>
+          </a>
+          <a class="lp-nav-item" href="/chat.html">
+            <span class="lp-nav-icon" data-icon="message-circle">◉</span><span>Chat</span>
+          </a>
+          <a class="lp-nav-item" href="/video-studio.html">
+            <span class="lp-nav-icon" data-icon="video">▶</span><span data-i18n="nav.videoStudio">Video Studio</span>
+          </a>
+          <a class="lp-nav-item" href="/iosdist.html">
+            <span class="lp-nav-icon" data-icon="smartphone">⬇</span><span data-i18n="nav.iosDist">iOS 分发</span>
+          </a>
+          <a class="lp-nav-item" href="/hosts.html">
+            <span class="lp-nav-icon" data-icon="server">▣</span><span data-i18n="nav.hosts">主机</span>
+          </a>
+          <a class="lp-nav-item" href="/editor.html">
+            <span class="lp-nav-icon" data-icon="code">✎</span><span>Editor</span>
+          </a>
+          <a class="lp-nav-item" href="/latch.html" hidden data-admin-nav>
+            <span class="lp-nav-icon" data-icon="settings">⚙</span><span data-i18n="nav.latch">Latch</span>
+          </a>
+          <a class="lp-nav-item" href="/bots.html" hidden data-admin-nav>
+            <span class="lp-nav-icon" data-icon="bot">◉</span><span data-i18n="nav.bots">Bot Management</span>
+          </a>
+          <a class="lp-nav-item" href="/prompts.html" hidden data-admin-nav>
+            <span class="lp-nav-icon" data-icon="sparkles">✦</span><span>Prompt 模板</span>
+          </a>
+          <a class="lp-nav-item" href="/grafana/" target="_blank" rel="noopener" hidden data-admin-nav>
+            <span class="lp-nav-icon" data-icon="line-chart">📊</span><span>Grafana</span>
+          </a>
+          <a class="lp-nav-item" href="/admin.html" hidden data-admin-nav>
+            <span class="lp-nav-icon" data-icon="users-cog">☍</span><span data-i18n="nav.userAdmin">用户管理</span>
+          </a>
+        </nav>
+        <div class="lp-sidebar-foot">
+          <div class="lp-foot-avatar" id="lpFootAvatar">U</div>
+          <div class="lp-foot-info">
+            <div class="lp-foot-name" id="lpFootName">—</div>
+            <div class="lp-foot-role" id="lpFootRole">—</div>
+          </div>
+          <div class="lp-sidebar-foot-actions">
+            <button class="lp-foot-icon-btn" type="button" data-open-settings-center data-settings-target="personalization" title="Settings" data-i18n-tooltip="nav.settings"><span data-icon="settings"></span></button>
+            <button id="logoutBtn" class="lp-foot-icon-btn" type="button" title="Log out"><span data-icon="log-out"></span></button>
+          </div>
+        </div>
+      </aside>
+
+      <div class="lp-main" style="overflow:hidden;">
+        <div class="lp-topbar">
+          <span class="lp-topbar-title" data-i18n="projects.title">项目</span>
+          <div class="lp-topbar-end" style="display:flex; align-items:center; gap:8px;">
+            <button id="projectsAgentTokensBtn" class="btn-inline btn-secondary" type="button" title="管理 polar-agent 凭据">🔑 Agent Tokens</button>
+            <button id="projectsNewBtn" class="btn-inline btn-secondary" type="button">＋ 新建项目</button>
+            <a class="lp-topbar-back" href="/dashboard.html">Dashboard</a>
+          </div>
+        </div>
+
+        <div class="lp-content" style="padding:0; overflow:hidden; flex:1; display:flex;">
+          <div class="video-studio-layout">
+            <!-- Left: project list -->
+            <aside class="video-studio-projects">
+              <div class="video-studio-projects-head">
+                <span class="badge">项目</span>
+                <span style="flex:1;"></span>
+                <span id="projectsFilterCount" style="font-size:11px; color:var(--text-muted,#888);"></span>
+              </div>
+              <div style="padding:6px 10px; display:flex; flex-direction:column; gap:6px; border-bottom:1px solid var(--border,#ececf0);">
+                <input id="projectsFilterSearch" type="search" class="input" placeholder="按名称搜索…" style="font-size:12px; padding:6px 8px; margin:0;" />
+                <select id="projectsFilterStatus" class="input" style="font-size:12px; padding:6px 8px;">
+                  <option value="">所有状态</option>
+                  <option value="draft">草稿</option>
+                  <option value="planning">规划中</option>
+                  <option value="building">开发中</option>
+                  <option value="beta">外测中</option>
+                  <option value="shipped">已发布</option>
+                  <option value="archived">已归档</option>
+                </select>
+                <select id="projectsFilterCodeProvider" class="input" style="font-size:12px; padding:6px 8px;">
+                  <option value="">所有编码工具</option>
+                  <option value="kimi">kimi-cli</option>
+                  <option value="claude">claude</option>
+                  <option value="codex">codex</option>
+                  <option value="__none__">未指定</option>
+                </select>
+              </div>
+              <div id="projectsList" class="video-studio-project-list">
+                <div class="chat-empty">加载中...</div>
+              </div>
+            </aside>
+
+            <!-- Right: project detail -->
+            <section class="video-studio-detail" id="projectDetail">
+              <div class="video-studio-empty" id="projectsEmpty">
+                <div class="chat-empty">从左侧选择项目，或点右上角新建</div>
+              </div>
+
+              <div id="projectsPanel" hidden style="padding:20px; display:flex; flex-direction:column; gap:18px; overflow:auto;">
+                <header style="display:flex; align-items:flex-start; gap:14px;">
+                  <div style="flex:1; min-width:0;">
+                    <h2 id="projectsName" style="margin:0 0 4px 0; font-size:20px; font-weight:600;">—</h2>
+                    <div style="font-size:12px; color:var(--text-muted,#888); display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                      <span id="projectsStatusPill" class="settings-value-pill" style="font-size:11px;">—</span>
+                      <span id="projectsCreatedAt" class="text-meta-mono"></span>
+                    </div>
+                  </div>
+                  <button id="projectsDeleteBtn" class="btn-inline" type="button" style="color:#c33; font-size:12px;">删除</button>
+                </header>
+
+                <!-- 描述 + decompose -->
+                <section style="display:flex; flex-direction:column; gap:10px;">
+                  <div style="font-weight:600; font-size:14px;">产品描述</div>
+                  <textarea id="projectsDescription" class="input textarea" rows="6" placeholder="一句话描述这个 app 想做什么；越具体越好（题材、目标人群、核心交互、预期最终形态）"></textarea>
+                  <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                    <input id="projectsGitRemoteUrl" class="input" type="text" maxlength="500" placeholder="Git 远端 URL（可选，留空则任务结束不 push）" style="flex:1; min-width:240px; font-size:12px;" />
+                    <button id="projectsSaveGitRemoteBtn" class="btn-inline" type="button" style="font-size:12px;">保存 git 远端</button>
+                  </div>
+                  <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                    <label for="projectsIOSDistAppSelect" style="font-size:12px; color:var(--text-muted,#888); white-space:nowrap;">iOS 分发 App：</label>
+                    <select id="projectsIOSDistAppSelect" class="input" style="flex:1; min-width:240px; font-size:12px; padding:6px 8px;">
+                      <option value="">不绑定（项目不是 iOS）</option>
+                    </select>
+                    <span id="projectsIOSDistAppMeta" style="font-size:11px; color:var(--text-muted,#888);"></span>
+                    <button id="projectsSaveIOSDistAppBtn" class="btn-inline" type="button" style="font-size:12px;">保存绑定</button>
+                  </div>
+                  <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                    <button id="projectsSaveDescBtn" class="btn-inline btn-secondary" type="button">保存描述</button>
+                    <select id="projectsDecomposeBotSelect" class="input" style="width:auto; padding:6px 8px; font-size:12px;" title="用 bot 拆解会带上它的 system_prompt 作为人格（可在 bots 页编辑），覆盖 LLM 选择">
+                      <option value="">Bot 角色（可选）</option>
+                    </select>
+                    <select id="projectsDecomposeLLMSelect" class="input" style="width:auto; padding:6px 8px; font-size:12px;" title="未选 bot 时直接用此 LLM；选了 bot 则忽略此项">
+                      <option value="">拆解用 LLM（自动选）</option>
+                    </select>
+                    <button id="projectsDecomposeBtn" class="btn-inline btn-secondary" type="button" style="background:#3a7;color:#fff;">AI 拆解功能 →</button>
+                    <span id="projectsDecomposeStatus" class="status-text"></span>
+                  </div>
+                </section>
+
+                <!-- Features -->
+                <section style="display:flex; flex-direction:column; gap:10px;" id="projectsFeaturesSection" hidden>
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <div style="font-weight:600; font-size:14px; display:flex; align-items:center; gap:6px;">
+                      <button id="projectsFeaturesCollapseBtn" type="button" title="折叠/展开" style="background:none; border:none; padding:0; cursor:pointer; font-size:14px; width:auto; margin:0; color:inherit;">▼</button>
+                      建议功能 <span id="projectsFeaturesCount" style="color:var(--text-muted,#888); font-size:12px; font-weight:400;"></span>
+                    </div>
+                    <button id="projectsGeneratePlanBtn" class="btn-inline btn-secondary" type="button">生成开发计划 →</button>
+                  </div>
+                  <div id="projectsFeaturesBody" style="display:flex; flex-direction:column; gap:10px;">
+                    <div id="projectsFeaturesList" style="display:flex; flex-direction:column; gap:6px;"></div>
+                    <div id="projectsPlanStatus" class="status-text"></div>
+                  </div>
+                </section>
+
+                <!-- Tasks -->
+                <section style="display:flex; flex-direction:column; gap:10px;" id="projectsTasksSection" hidden>
+                  <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                    <div style="font-weight:600; font-size:14px; display:flex; align-items:center; gap:6px;">
+                      <button id="projectsTasksCollapseBtn" type="button" title="折叠/展开" style="background:none; border:none; padding:0; cursor:pointer; font-size:14px; width:auto; margin:0; color:inherit;">▼</button>
+                      任务 <span id="projectsTasksCount" style="color:var(--text-muted,#888); font-size:12px; font-weight:400;"></span>
+                    </div>
+                    <span style="flex:1;"></span>
+                    <select id="projectsDispatchAllBot" class="input" style="width:auto; padding:6px 8px; font-size:12px;">
+                      <option value="">选 bot…</option>
+                    </select>
+                    <button id="projectsDispatchAllBtn" class="btn-inline btn-secondary" type="button" style="font-size:12px;">🚀 派全部 todos</button>
+                    <button id="projectsFinishAllBtn" class="btn-inline btn-secondary" type="button" style="font-size:12px;" title="把所有进行中/待审任务标记为完成">✓ 全部完成</button>
+                    <button id="projectsCancelAllBtn" class="btn-inline btn-secondary" type="button" style="font-size:12px;" title="把所有未完成任务标记为阻塞">✗ 全部取消</button>
+                    <span id="projectsDispatchAllStatus" class="status-text" style="font-size:11px;"></span>
+                  </div>
+                  <div id="projectsTasksList" style="display:flex; flex-direction:column; gap:6px;"></div>
+                </section>
+                <section style="display:flex; flex-direction:column; gap:10px;" id="projectsResearchSection" hidden>
+                  <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                    <div style="font-weight:600; font-size:14px; display:flex; align-items:center; gap:6px;">
+                      <button id="projectsResearchCollapseBtn" type="button" title="折叠/展开" style="background:none; border:none; padding:0; cursor:pointer; font-size:14px; width:auto; margin:0; color:inherit;">▼</button>
+                      🔬 研究记录 <span id="projectsResearchCount" style="color:var(--text-muted,#888); font-size:12px; font-weight:400;"></span>
+                    </div>
+                    <span style="flex:1;"></span>
+                    <button id="projectsResearchRefreshBtn" class="btn-inline btn-secondary" type="button" style="font-size:12px;">刷新</button>
+                  </div>
+                  <div id="projectsResearchList" style="display:flex; flex-direction:column; gap:6px;"></div>
+                </section>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create project modal -->
+    <div id="projectsCreateModal" class="modal" aria-hidden="true">
+      <div class="modal-backdrop"></div>
+      <div class="modal-card" role="dialog" aria-modal="true">
+        <div class="modal-header">
+          <h3>新建项目</h3>
+          <button id="projectsCreateModalCloseBtn" class="btn-inline btn-secondary" type="button">关闭</button>
+        </div>
+        <form id="projectsCreateForm" class="modal-body">
+          <label class="form-label" for="projectsCreateName">项目名称</label>
+          <input id="projectsCreateName" class="input" type="text" required maxlength="120" placeholder="例如：宋词地图" />
+
+          <label class="form-label" for="projectsCreateDescription">产品描述（可后填）</label>
+          <textarea id="projectsCreateDescription" class="input textarea" rows="4" placeholder="描述你想做的 app —— 它做什么、为谁、有哪些核心场景"></textarea>
+
+          <label class="form-label" for="projectsCreateRuntimeEnv">运行环境</label>
+          <select id="projectsCreateRuntimeEnv" class="input">
+            <option value="">（不指定，AI 自由发挥）</option>
+            <option value="ios_swiftui">iOS · SwiftUI 单 app（推荐）</option>
+            <option value="ios_uikit">iOS · UIKit</option>
+            <option value="macos_native">macOS · 桌面应用</option>
+            <option value="web_static">Web · 纯静态 HTML/CSS/JS（无后端）</option>
+            <option value="web_react">Web · React + Vite + TS</option>
+            <option value="web_nextjs">Web · Next.js（轻后端）</option>
+            <option value="cli_tool">CLI 工具（Python/Go/Bash）</option>
+            <option value="research">研究 / 技术预研（agent 用 LLM + 工具调研，不写代码）</option>
+            <option value="chrome_ext">Chrome 扩展（manifest v3）</option>
+          </select>
+
+          <label class="form-label" for="projectsCreateBusinessScenario">业务场景</label>
+          <select id="projectsCreateBusinessScenario" class="input">
+            <option value="">（不指定）</option>
+            <option value="creative_game">创意小游戏</option>
+            <option value="content_app">文学/历史/地理/教育内容</option>
+            <option value="productivity">生产力工具</option>
+            <option value="social">社交互动</option>
+            <option value="data_viz">数据可视化</option>
+            <option value="commerce">商业/交易（支付走 mock）</option>
+            <option value="media">媒体/内容消费</option>
+          </select>
+
+          <label class="form-label" for="projectsCreateCodeProvider">首选编码工具（可选，对比测试时方便）</label>
+          <select id="projectsCreateCodeProvider" class="input">
+            <option value="">（不指定，pickup 时手选 bot）</option>
+            <option value="kimi">kimi-cli</option>
+            <option value="claude">claude</option>
+            <option value="codex">codex</option>
+          </select>
+
+          <label class="form-label" for="projectsCreateGitRemoteUrl">Git 远端 URL（可选）</label>
+          <input id="projectsCreateGitRemoteUrl" class="input" type="text" maxlength="500" placeholder="git@github.com:foo/bar.git 或 https://github.com/foo/bar.git" />
+          <div style="font-size:11px; color:var(--text-muted,#888); margin:-6px 0 8px 0;">
+            ⓘ 留空则任务结束后不 push。设置后 polar-agent 会在每个 task 之后 commit + push 编码工具产生的改动。需要 host 已配好 git 认证（SSH key 或 credential helper）。
+          </div>
+
+          <div id="projectsCreateStatus" class="status-text"></div>
+          <div class="modal-actions">
+            <button id="projectsCreateSubmitBtn" class="btn-secondary" type="submit">创建</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Agent tokens modal -->
+    <div id="agentTokensModal" class="modal" aria-hidden="true">
+      <div class="modal-backdrop"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" style="max-width:680px; max-height:90vh; display:flex; flex-direction:column;">
+        <div class="modal-header" style="flex-shrink:0;">
+          <h3>polar-agent Tokens</h3>
+          <button id="agentTokensModalCloseBtn" class="btn-inline btn-secondary" type="button">关闭</button>
+        </div>
+        <div class="modal-body" style="display:flex; flex-direction:column; gap:14px; flex:1; min-height:0; overflow-y:auto;">
+          <div style="font-size:12px; color:var(--text-muted,#888);">
+            polar-agent 是本地 Go 二进制，跑在你的 Mac 上，接收来自 bot 的 tool call 在指定工作目录执行（read_file / write_file / list_dir / run_cmd）。下面发的 token 给 <code>polar-agent login --token</code> 用。
+          </div>
+
+          <fieldset style="border:1px solid var(--border,#ececf0); border-radius:6px; padding:10px; display:flex; flex-direction:column; gap:8px;">
+            <legend style="font-size:12px; padding:0 6px;">＋ 新建 agent</legend>
+            <input id="agentTokenName" class="input" type="text" placeholder="名字 (例: my-mac / linux-runner-1)" maxlength="60" style="font-size:12px;" />
+            <div style="display:flex; gap:14px; align-items:center; padding:4px 0; flex-wrap:wrap;">
+              <span style="font-size:12px; color:var(--text-muted,#888); white-space:nowrap;">部署目标：</span>
+              <label style="display:flex; gap:6px; align-items:center; cursor:pointer; font-size:12px;">
+                <input type="radio" name="agentTargetOS" value="darwin" checked style="margin:0; padding:0; width:auto; flex-shrink:0;" />
+                <span>Mac（install.sh 原生）</span>
+              </label>
+              <label style="display:flex; gap:6px; align-items:center; cursor:pointer; font-size:12px;">
+                <input type="radio" name="agentTargetOS" value="linux" style="margin:0; padding:0; width:auto; flex-shrink:0;" />
+                <span>Linux（docker run）</span>
+              </label>
+            </div>
+            <div style="font-size:11px; color:var(--text-muted,#888);">勾选要装的 coder + 选 auth 模式。提交后弹出 token + 一键安装/运行脚本（仅本次可见）。</div>
+            <div id="agentTokenCoderRows" style="display:flex; flex-direction:column; gap:6px;">
+              <!-- rendered by projects.ts; one row per coder (kimi/claude/codex) -->
+            </div>
+            <button id="agentTokenCreateBtn" class="btn-inline btn-secondary" type="button" style="align-self:flex-start;">＋ 新建 agent</button>
+          </fieldset>
+
+          <div id="agentTokenJustCreated" hidden style="padding:12px; background:#fff7e6; border:1px solid #f5d28a; border-radius:6px; display:flex; flex-direction:column; gap:10px;">
+            <div style="font-weight:600; font-size:13px; color:#8a5a00;">⚠ 以下内容只在这一次窗口里可见：</div>
+
+            <div>
+              <div style="font-size:11px; color:var(--text-muted,#888); margin-bottom:4px;">Raw token（粘到 polar-agent login）：</div>
+              <div style="padding:8px; background:#fff; border:1px solid #f5d28a; border-radius:4px; font-family:monospace; font-size:12px; word-break:break-all;" id="agentTokenJustCreatedRaw"></div>
+              <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
+                <button id="agentTokenCopyBtn" class="btn-inline btn-secondary" type="button" style="font-size:12px;">复制 token</button>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:11px; color:var(--text-muted,#888); margin-bottom:4px;">一键安装脚本（在 agent host 上跑，含 token + coder 安装 + auth 提示）：</div>
+              <textarea id="agentTokenInstallScript" readonly spellcheck="false" rows="10" style="font-family:ui-monospace,SFMono-Regular,monospace; font-size:11px; width:100%; box-sizing:border-box; background:#fff; border:1px solid #f5d28a; border-radius:4px; padding:8px;"></textarea>
+              <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
+                <button id="agentTokenScriptCopyBtn" class="btn-inline btn-secondary" type="button" style="font-size:12px;">复制脚本</button>
+                <button id="agentTokenScriptDownloadBtn" class="btn-inline btn-secondary" type="button" style="font-size:12px;">下载 install.sh</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-weight:600; font-size:13px; margin-bottom:6px;">已发的 token</div>
+            <div id="agentTokensList" style="display:flex; flex-direction:column; gap:6px;">
+              <div class="chat-empty">加载中...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- system_agent capability B: task sharpen modal. Opens from the
+         per-row ✨ button. Shows original vs draft side-by-side; user
+         picks one to write back via PUT /tasks/:id (with audit_source
+         flag so the prev row gets snapshotted to project_task_revisions). -->
+    <div id="taskSharpenModal" class="modal" aria-hidden="true">
+      <div class="modal-backdrop"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" style="max-width:780px;">
+        <div class="modal-header">
+          <h3>✨ AI 优化任务需求</h3>
+          <button id="taskSharpenCloseBtn" class="btn-inline btn-secondary" type="button">关闭</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-label">原任务</div>
+          <div id="taskSharpenOriginal" class="profile-bio-copy" style="margin-bottom:14px; min-height:60px; white-space:pre-wrap;"></div>
+
+          <label class="form-label" for="taskSharpenInstruction">额外要求（可选）</label>
+          <textarea id="taskSharpenInstruction" class="input textarea" rows="2" maxlength="200" placeholder="例如：拆成更细的步骤；加上验收标准；保持简短"></textarea>
+
+          <div class="task-form-actions" style="margin-top:14px;">
+            <button id="taskSharpenRunBtn" class="btn-inline btn-secondary" type="button">生成候选</button>
+            <span id="taskSharpenStatus" class="status-text"></span>
+          </div>
+
+          <div id="taskSharpenResults" class="bio-refine-results" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;"></div>
+          <div id="taskSharpenNotes" class="status-text" style="margin-top:10px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- system_agent capability C: task retrospect modal. Opens from
+         the per-row 📋 button on done tasks. Shows the four-section
+         post-mortem (summary / tools used / open issues / next time)
+         with a regenerate button. -->
+    <div id="taskRetrospectModal" class="modal" aria-hidden="true">
+      <div class="modal-backdrop"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" style="max-width:780px;">
+        <div class="modal-header">
+          <h3>📋 任务复盘</h3>
+          <button id="taskRetrospectCloseBtn" class="btn-inline btn-secondary" type="button">关闭</button>
+        </div>
+        <div class="modal-body">
+          <div id="taskRetrospectMeta" class="status-text" style="margin-bottom:10px;"></div>
+          <div id="taskRetrospectBody" class="bio-refine-results" style="display:flex; flex-direction:column; gap:14px;"></div>
+          <div class="task-form-actions" style="margin-top:14px;">
+            <button id="taskRetrospectRegenerateBtn" class="btn-inline btn-secondary" type="button">重新生成</button>
+            <span id="taskRetrospectStatus" class="status-text"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/scripts/projects.js"></script>
+  </body>
+</html>
