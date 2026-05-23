@@ -1,4 +1,4 @@
-import { requestJson } from "./http.js";
+import { requestJson } from "@networkextension/polar-ui-common/api/http";
 import type {
   AgentTokenCreatePayload,
   AgentTokenCreateResponse,
