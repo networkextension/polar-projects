@@ -1,0 +1,444 @@
+export type LoginRecord = {
+  city?: string;
+  region?: string;
+  country?: string;
+  ip_address?: string;
+  login_method?: string;
+  device_type?: string;
+  logged_in_at: string;
+};
+
+export type LoginHistoryResponse = {
+  records?: LoginRecord[];
+};
+
+export type EntrySummary = {
+  id: number;
+  title: string;
+  is_public?: boolean;
+};
+
+export type EntryDetailResponse = {
+  entry?: EntrySummary;
+  content?: string;
+  can_edit?: boolean;
+};
+
+export type EntryListResponse = {
+  entries?: EntrySummary[];
+  has_more?: boolean;
+  next_offset?: number;
+};
+
+export type TagPayload = {
+  name: string;
+  slug: string;
+  description: string;
+  sort_order: number;
+};
+
+export type Tag = TagPayload & {
+  id: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TagListResponse = {
+  tags?: Tag[];
+  has_more?: boolean;
+  next_offset?: number;
+};
+
+export type SiteSettings = {
+  name: string;
+  description: string;
+  icon_url?: string;
+  registration_requires_invite?: boolean;
+  apple_push_dev_cert?: ApplePushCertificate;
+  apple_push_prod_cert?: ApplePushCertificate;
+  system_info?: SystemInfo;
+  updated_at?: string;
+};
+
+export type InviteCode = {
+  code: string;
+  created_by?: string;
+  created_at: string;
+  used_by?: string;
+  used_at?: string;
+  disabled: boolean;
+};
+
+export type SystemInfo = {
+  git_tag_version?: string;
+  os?: string;
+  cpu_arch?: string;
+  partition_path?: string;
+  partition_capacity?: string;
+};
+
+export type ApplePushCertificate = {
+  environment: "dev" | "prod";
+  file_name: string;
+  file_url: string;
+  uploaded_at?: string;
+};
+
+export type SiteSettingsResponse = ErrorResponse & {
+  site?: SiteSettings;
+};
+
+export type InviteCodeResponse = ErrorResponse & {
+  codes?: InviteCode[];
+};
+
+export type ErrorResponse = {
+  error?: string;
+  message?: string;
+};
+
+export type IconUploadResponse = ErrorResponse & {
+  icon_url?: string;
+  site?: SiteSettings;
+};
+
+export type PasskeyBeginResponse = ErrorResponse & {
+  session_id?: string;
+  publicKey: {
+    challenge: string | Uint8Array;
+    user: {
+      id: string | Uint8Array;
+    };
+    excludeCredentials?: Array<{
+      id: string | Uint8Array;
+      type: string;
+    }>;
+  };
+};
+
+export type PasskeyCredential = {
+  credential_id: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PasskeyListResponse = ErrorResponse & {
+  credentials?: PasskeyCredential[];
+  count?: number;
+  has_passkeys?: boolean;
+};
+
+export type LLMConfigPayload = {
+  name: string;
+  base_url: string;
+  model: string;
+  api_key?: string;
+  // Optional HTTP(S) proxy used by dock when calling this provider.
+  // Empty / undefined = inherit dock's default Go transport
+  // (HTTP_PROXY / HTTPS_PROXY env on dock host).
+  proxy_url?: string;
+  system_prompt: string;
+  shared?: boolean;
+  // is_system: marks the row that powers the platform-wide system AI
+  // agent (responderUserID=system). Singleton; mutually exclusive with
+  // `shared`. Replaces the legacy AI_AGENT_* env vars.
+  is_system?: boolean;
+  // Optional discriminator + extras blob. Defaults to "text" / "{}" on the
+  // backend; only video-kind presets (Seedance et al.) need to set these.
+  provider_kind?: string;
+  extras?: string;
+};
+
+export type LLMConfig = {
+  id: number;
+  owner_user_id: string;
+  share_id: string;
+  shared: boolean;
+  is_platform?: boolean;
+  is_system?: boolean;
+  name: string;
+  base_url: string;
+  model: string;
+  system_prompt: string;
+  has_api_key: boolean;
+  proxy_url?: string;
+  provider_kind?: string;
+  extras?: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+export type LLMConfigListResponse = ErrorResponse & {
+  configs?: LLMConfig[];
+  config?: LLMConfig;
+};
+
+export type BotPayload = {
+  name: string;
+  description: string;
+  system_prompt: string;
+  llm_config_id: number;
+  bot_kind?: "classic" | "passthrough";
+  preferred_tool?: string;
+  // model_override (qunliao β): when non-empty, fanout + idle loop
+  // use this model string instead of llm_configs.model. Lets one
+  // (provider, api_key) row power multiple bots with different
+  // model variants — "kimi k2.5 PK kimi k1.5" in the same room.
+  model_override?: string;
+  // host_skill_id (P1d): bind bot replies to a host's skill. null
+  // (or omitted on create) = no binding, legacy path. number > 0 =
+  // dock routes the bot via skill.start dispatch on that host.
+  host_skill_id?: number | null;
+};
+
+export type BotUser = {
+  id: number;
+  owner_user_id: string;
+  bot_user_id: string;
+  name: string;
+  description: string;
+  system_prompt: string;
+  llm_config_id: number;
+  config_name: string;
+  // bot_kind:
+  //   "classic"     — has llm_config_id, regular LLM call path
+  //   "passthrough" — local-tool-only, llm_config_id may be 0
+  bot_kind: "classic" | "passthrough";
+  // preferred_tool: hint string ("kimi"/"claude"/"codex"/...) shown
+  // in UI when bot is passthrough, helping the user remember which
+  // polar-agent --tool= flag pairs with it. Backend doesn't enforce.
+  preferred_tool: string;
+  model_override?: string;
+  // host_skill_id (P1d): non-null = bot is bound to a host's skill;
+  // dock routes through the host module's skill.start dispatch.
+  host_skill_id?: number | null;
+  // is_auto_registered: created via POST /api/agent/auto-register
+  // by a polar-agent docker container at startup. Operator can't
+  // edit/delete from UI — managed by the agent token's lifecycle.
+  is_auto_registered?: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type BotListResponse = ErrorResponse & {
+  bots?: BotUser[];
+  bot?: BotUser;
+};
+
+export type MarkdownAssistResponse = ErrorResponse & {
+  content?: string;
+  bot?: {
+    id: number;
+    name: string;
+  };
+  llm?: {
+    config_id: number;
+    model: string;
+  };
+  // Token usage from the upstream LLM. Only present when the provider
+  // returns it (OpenAI-compat + MiroMind populate it on non-streaming
+  // calls; Anthropic/Gemini/xAI leave it nil). Rendered via
+  // lib/assist_usage.ts → formatAssistUsageBadge (returns "" when nil).
+  usage?: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens?: number;
+  };
+};
+
+export type PackTunnelKCPTunConfig = {
+  key: string;
+  crypt: string;
+  mode: string;
+  auto_expire?: number;
+  scavenge_ttl?: number;
+  mtu?: number;
+  snd_wnd?: number;
+  rcv_wnd?: number;
+  data_shard?: number;
+  parity_shard?: number;
+  dscp?: number;
+  no_comp?: boolean;
+  salt?: string;
+};
+
+export type PackTunnelProxyNodeType =
+  | "http"
+  | "https"
+  | "socks5"
+  | "kcptun"
+  | "ss"
+  | "ss3";
+
+export type PackTunnelTransport = {
+  kind: string;
+  kcptun?: PackTunnelKCPTunConfig;
+};
+
+export type PackTunnelProfile = {
+  id: string;
+  user_id: string;
+  name: string;
+  type: PackTunnelProxyNodeType;
+  server: {
+    address: string;
+    port: number;
+  };
+  auth: {
+    password: string;
+    method: string;
+  };
+  options: {
+    tls_enabled: boolean;
+    udp_relay_enabled: boolean;
+    chain_enabled: boolean;
+  };
+  transport?: PackTunnelTransport;
+  metadata: {
+    priority: number;
+    enabled: boolean;
+    editable: boolean;
+    source: string;
+    country_code: string;
+    country_flag: string;
+    is_active: boolean;
+  };
+  created_at: string;
+  updated_at: string;
+};
+
+export type PackTunnelProfilePayload = {
+  name: string;
+  type: PackTunnelProxyNodeType;
+  server: {
+    address: string;
+    port: number;
+  };
+  auth: {
+    password: string;
+    method: string;
+  };
+  options: {
+    tls_enabled: boolean;
+    udp_relay_enabled: boolean;
+    chain_enabled: boolean;
+  };
+  transport?: PackTunnelTransport;
+  metadata: {
+    priority: number;
+    enabled: boolean;
+    editable: boolean;
+    source: string;
+    country_code: string;
+    country_flag: string;
+    is_active: boolean;
+  };
+};
+
+export type PackTunnelProfileListResponse = ErrorResponse & {
+  profiles?: PackTunnelProfile[];
+  active_profile?: PackTunnelProfile | null;
+  profile?: PackTunnelProfile;
+};
+
+export type PackTunnelRuleFile = {
+  user_id: string;
+  file_name: string;
+  stored_name: string;
+  file_path: string;
+  size: number;
+  content_type: string;
+  uploaded_at: string;
+};
+
+export type PackTunnelRuleResponse = ErrorResponse & {
+  rule?: PackTunnelRuleFile;
+};
+
+// ---------------------------------------------------------------------------
+// Latch service
+// ---------------------------------------------------------------------------
+
+export type LatchProxyType = "ss" | "ss3" | "kcp_over_http" | "kcp_over_ss" | "kcp_over_ss3" | "wireguard";
+
+export type LatchProxy = {
+  id: string;
+  group_id: string;
+  name: string;
+  type: LatchProxyType;
+  config: Record<string, unknown>;
+  sha1: string;
+  version: number;
+  created_at: string;
+};
+
+export type LatchRule = {
+  id: string;
+  group_id: string;
+  name: string;
+  content: string;
+  sha1: string;
+  version: number;
+  created_at: string;
+};
+
+export type LatchProfile = {
+  id: string;
+  name: string;
+  description: string;
+  proxy_group_ids: string[];
+  rule_group_id: string;
+  enabled: boolean;
+  shareable: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type LatchServiceNode = {
+  id: string;
+  name: string;
+  ip: string;
+  port: number;
+  proxy_type: LatchProxyType;
+  config: Record<string, unknown>;
+  status: string;
+  last_updated_at: string;
+  created_at: string;
+  updated_at: string;
+  is_deleted: boolean;
+};
+
+export type LatchProxyListResponse = ErrorResponse & {
+  proxies?: LatchProxy[];
+  proxy?: LatchProxy;
+  versions?: LatchProxy[];
+};
+
+export type LatchRuleListResponse = ErrorResponse & {
+  rules?: LatchRule[];
+  rule?: LatchRule;
+  versions?: LatchRule[];
+};
+
+export type LatchProfileDetail = LatchProfile & {
+  proxies: LatchProxy[];
+  rule?: LatchRule;
+};
+
+export type LatchProfileListResponse = ErrorResponse & {
+  profiles?: LatchProfile[] | LatchProfileDetail[];
+  profile?: LatchProfile;
+};
+
+export type LatchServiceNodeListResponse = ErrorResponse & {
+  nodes?: LatchServiceNode[];
+  node?: LatchServiceNode;
+  token?: string;
+  meta?: {
+    id: string;
+    node_id: string;
+    created_by: string;
+    created_at: string;
+    revoked: boolean;
+  };
+};

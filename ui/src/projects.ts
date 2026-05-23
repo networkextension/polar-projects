@@ -6,7 +6,7 @@
 //
 // Per-task chat thread (1:1) wiring + bot pickup come in phase 1.3.
 
-import { fetchAvailableLLMConfigs, fetchBotUsers } from "./api/dashboard.js";
+import { fetchAvailableLLMConfigs, fetchBotUsers } from "./vendor/dashboard.js";
 import {
   bulkUpdateProjectTaskStatus,
   createAgentToken,
@@ -28,14 +28,14 @@ import {
   updateProjectTask,
 } from "./api/projects.js";
 import type { ResearchRun } from "./api/projects.js";
-import { fetchCurrentUser, logout } from "./api/session.js";
-import { fetchIOSApps } from "./api/iosdist.js";
-import type { BotUser } from "./types/dashboard.js";
-import type { ChatLLMConfig } from "./types/chat.js";
-import type { IOSApp } from "./types/iosdist.js";
-import { byId } from "./lib/dom.js";
-import { hydrateSiteBrand, renderSidebarFoot } from "./lib/site.js";
-import { bindThemeSync, initStoredTheme } from "./lib/theme.js";
+import { fetchCurrentUser, logout } from "@networkextension/polar-ui-common/api/session";
+import { fetchIOSApps } from "./vendor/iosdist.js";
+import type { BotUser } from "./vendor/dashboard-types.js";
+import type { ChatLLMConfig } from "./vendor/chat-types.js";
+import type { IOSApp } from "./vendor/iosdist-types.js";
+import { byId } from "@networkextension/polar-ui-common/lib/dom";
+import { hydrateSiteBrand, renderSidebarFoot } from "@networkextension/polar-ui-common/lib/site";
+import { bindThemeSync, initStoredTheme } from "@networkextension/polar-ui-common/lib/theme";
 import type {
   AgentCoderEntry,
   AgentToken,
