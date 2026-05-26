@@ -238,11 +238,19 @@ func (p *Plugin) heartbeatLoop(ctx context.Context) {
 	}
 }
 
+// projectsUIRoutes — sidebar entries this plugin contributes. Heartbeated
+// up to dock; aggregated into /api/plugin-ui-routes for polar-dock-ui's
+// dynamic sidebar. See task #196.
+var projectsUIRoutes = []sdk.UIRoute{
+	{Path: "/projects.html", Label: "Projects", Icon: "kanban", Order: 25},
+}
+
 func (p *Plugin) beat(_ context.Context) {
 	err := p.Dock.Heartbeat(sdk.HeartbeatOpts{
 		Version:       p.Ver,
 		Endpoint:      p.Listen,
 		UptimeSeconds: int64(time.Since(p.startedAt).Seconds()),
+		UIRoutes:      projectsUIRoutes,
 	})
 	if err != nil {
 		log.Printf("projects: heartbeat failed: %v", err)
