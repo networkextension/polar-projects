@@ -35,6 +35,7 @@ import type { ChatLLMConfig } from "./vendor/chat-types.js";
 import type { IOSApp } from "./vendor/iosdist-types.js";
 import { byId } from "@networkextension/polar-ui-common/lib/dom";
 import { hydrateSiteBrand, renderSidebarFoot } from "@networkextension/polar-ui-common/lib/site";
+import { mountPlatformNav } from "@networkextension/polar-ui-common/lib/sidebar";
 import { bindThemeSync, initStoredTheme } from "@networkextension/polar-ui-common/lib/theme";
 import type {
   AgentCoderEntry,
@@ -1792,6 +1793,7 @@ document.getElementById("logoutBtn")?.addEventListener("click", async () => {
 
 async function init(): Promise<void> {
   await hydrateSiteBrand();
+  void mountPlatformNav();
   const { response, data } = await fetchCurrentUser();
   if (!response.ok) {
     window.location.href = "/login.html";
