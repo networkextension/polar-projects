@@ -1217,6 +1217,13 @@ async function loadBots(): Promise<void> {
 // that have an API key. Disabled configs (no key) are surfaced
 // with a "(no key)" suffix but disabled — visible to the user
 // without misleading them into picking an unusable one.
+// truncateLabel caps <option> text length. A <select> can't be squeezed
+// below its longest option by flex, so one verbose config name used to
+// force the whole 行 past the viewport on laptop widths.
+function truncateLabel(s: string, max = 28): string {
+  return s.length > max ? `${s.slice(0, max - 1)}…` : s;
+}
+
 async function loadDecomposeLLMs(): Promise<void> {
   const { response, data } = await fetchAvailableLLMConfigs();
   if (!response.ok) {
@@ -1226,9 +1233,9 @@ async function loadDecomposeLLMs(): Promise<void> {
   availableLLMConfigs = configs;
   const opts = ['<option value="">拆解用 LLM（自动选）</option>'];
   for (const cfg of configs) {
-    const label = `${escapeHTML(cfg.name)} · ${escapeHTML(cfg.model)}${cfg.has_api_key ? "" : "（缺 API Key）"}`;
+    const label = `${escapeHTML(truncateLabel(`${cfg.name} · ${cfg.model}`))}${cfg.has_api_key ? "" : "（缺 API Key）"}`;
     const disabled = cfg.has_api_key ? "" : " disabled";
-    opts.push(`<option value="${cfg.id}"${disabled}>${label}</option>`);
+    opts.push(`<option value="${cfg.id}"${disabled} title="${escapeHTML(`${cfg.name} · ${cfg.model}`)}">${label}</option>`);
   }
   decomposeLLMSelect.innerHTML = opts.join("");
 }
@@ -1246,7 +1253,7 @@ function loadDecomposeBots(): void {
   const previous = decomposeBotSelect.value;
   const opts = ['<option value="">Bot 角色（不用 bot persona）</option>'];
   for (const b of classicBots) {
-    opts.push(`<option value="${escapeHTML(b.bot_user_id)}">${escapeHTML(b.name)}（${escapeHTML(b.config_name)}）</option>`);
+    opts.push(`<option value="${escapeHTML(b.bot_user_id)}" title="${escapeHTML(`${b.name}（${b.config_name}）`)}">${escapeHTML(truncateLabel(`${b.name}（${b.config_name}）`))}</option>`);
   }
   decomposeBotSelect.innerHTML = opts.join("");
   if (previous && classicBots.some((b) => b.bot_user_id === previous)) {
