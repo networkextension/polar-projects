@@ -7,6 +7,19 @@
     <link rel="icon" type="image/svg+xml" href="/assets/polaris-logo.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/styles.css" />
+    <style>
+      /* 页内布局修正 — /styles.css 由 dock 统一提供，项目页自己的规则放这里。 */
+      /* 行内小控件按钮：.btn-inline 的 padding:12px 16px + 继承 16px 字号是给页面级
+         CTA 设计的，用在表单行里会比同行 select 高出一截并挤爆窄视口。 */
+      .btn-inline.btn-compact { padding: 6px 12px; font-size: 12px; font-weight: 600; line-height: 1.4; white-space: nowrap; }
+      /* select 的 min-content 宽度由最长 option 决定且默认不可被 flex 压缩——
+         LLM 配置名可达 400px+，没有上限时整行被顶出可视区（1050px 视口按钮全被裁掉）。 */
+      #projectsPanel select.input { min-width: 0; max-width: 100%; }
+      @media (max-width: 1200px) {
+        .video-studio-projects { width: 200px; }
+        .video-studio-layout { padding: 12px; gap: 12px; }
+      }
+    </style>
   </head>
   <body class="lp-page">
     <div class="lp-app">
@@ -82,7 +95,7 @@
                 <div class="chat-empty">从左侧选择项目，或点右上角新建</div>
               </div>
 
-              <div id="projectsPanel" hidden style="padding:20px; display:flex; flex-direction:column; gap:18px; overflow:auto;">
+              <div id="projectsPanel" hidden style="padding:20px; display:flex; flex-direction:column; gap:18px; overflow-x:hidden;">
                 <header style="display:flex; align-items:flex-start; gap:14px;">
                   <div style="flex:1; min-width:0;">
                     <h2 id="projectsName" style="margin:0 0 4px 0; font-size:20px; font-weight:600;">—</h2>
@@ -91,7 +104,7 @@
                       <span id="projectsCreatedAt" class="text-meta-mono"></span>
                     </div>
                   </div>
-                  <button id="projectsDeleteBtn" class="btn-inline" type="button" style="color:#c33; font-size:12px;">删除</button>
+                  <button id="projectsDeleteBtn" class="btn-inline btn-compact" type="button" style="color:#c33; flex-shrink:0;">删除</button>
                 </header>
 
                 <!-- 描述 + decompose -->
@@ -99,26 +112,26 @@
                   <div style="font-weight:600; font-size:14px;">产品描述</div>
                   <textarea id="projectsDescription" class="input textarea" rows="6" placeholder="一句话描述这个 app 想做什么；越具体越好（题材、目标人群、核心交互、预期最终形态）"></textarea>
                   <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                    <input id="projectsGitRemoteUrl" class="input" type="text" maxlength="500" placeholder="Git 远端 URL（可选，留空则任务结束不 push）" style="flex:1; min-width:240px; font-size:12px;" />
-                    <button id="projectsSaveGitRemoteBtn" class="btn-inline" type="button" style="font-size:12px;">保存 git 远端</button>
+                    <input id="projectsGitRemoteUrl" class="input" type="text" maxlength="500" placeholder="Git 远端 URL（可选，留空则任务结束不 push）" style="flex:1; min-width:160px; font-size:12px;" />
+                    <button id="projectsSaveGitRemoteBtn" class="btn-inline btn-compact" type="button">保存 git 远端</button>
                   </div>
                   <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                     <label for="projectsIOSDistAppSelect" style="font-size:12px; color:var(--text-muted,#888); white-space:nowrap;">iOS 分发 App：</label>
-                    <select id="projectsIOSDistAppSelect" class="input" style="flex:1; min-width:240px; font-size:12px; padding:6px 8px;">
+                    <select id="projectsIOSDistAppSelect" class="input" style="flex:1; min-width:160px; font-size:12px; padding:6px 8px;">
                       <option value="">不绑定（项目不是 iOS）</option>
                     </select>
                     <span id="projectsIOSDistAppMeta" style="font-size:11px; color:var(--text-muted,#888);"></span>
-                    <button id="projectsSaveIOSDistAppBtn" class="btn-inline" type="button" style="font-size:12px;">保存绑定</button>
+                    <button id="projectsSaveIOSDistAppBtn" class="btn-inline btn-compact" type="button">保存绑定</button>
                   </div>
                   <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                    <button id="projectsSaveDescBtn" class="btn-inline btn-secondary" type="button">保存描述</button>
-                    <select id="projectsDecomposeBotSelect" class="input" style="width:auto; padding:6px 8px; font-size:12px;" title="用 bot 拆解会带上它的 system_prompt 作为人格（可在 bots 页编辑），覆盖 LLM 选择">
+                    <button id="projectsSaveDescBtn" class="btn-inline btn-secondary btn-compact" type="button">保存描述</button>
+                    <select id="projectsDecomposeBotSelect" class="input" style="flex:1 1 160px; padding:6px 8px; font-size:12px;" title="用 bot 拆解会带上它的 system_prompt 作为人格（可在 bots 页编辑），覆盖 LLM 选择">
                       <option value="">Bot 角色（可选）</option>
                     </select>
-                    <select id="projectsDecomposeLLMSelect" class="input" style="width:auto; padding:6px 8px; font-size:12px;" title="未选 bot 时直接用此 LLM；选了 bot 则忽略此项">
+                    <select id="projectsDecomposeLLMSelect" class="input" style="flex:1 1 160px; padding:6px 8px; font-size:12px;" title="未选 bot 时直接用此 LLM；选了 bot 则忽略此项">
                       <option value="">拆解用 LLM（自动选）</option>
                     </select>
-                    <button id="projectsDecomposeBtn" class="btn-inline btn-secondary" type="button" style="background:#3a7;color:#fff;">AI 拆解功能 →</button>
+                    <button id="projectsDecomposeBtn" class="btn-inline btn-compact" type="button" style="background:#3a7;color:#fff;">AI 拆解功能 →</button>
                     <span id="projectsDecomposeStatus" class="status-text"></span>
                   </div>
                 </section>
