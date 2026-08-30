@@ -53,7 +53,7 @@
                 <span id="projectsFilterCount" style="font-size:11px; color:var(--text-muted,#888);"></span>
               </div>
               <div style="padding:6px 10px; display:flex; flex-direction:column; gap:6px; border-bottom:1px solid var(--border,#ececf0);">
-                <input id="projectsFilterSearch" type="search" class="input" placeholder="按名称搜索…" style="font-size:12px; padding:6px 8px; margin:0;" />
+                <input id="projectsFilterSearch" type="search" class="input" placeholder="按名称搜索…" style="font-size:12px; padding:6px 8px; margin:0;"  aria-label="按名称搜索…"/>
                 <select id="projectsFilterStatus" class="input" style="font-size:12px; padding:6px 8px;">
                   <option value="">所有状态</option>
                   <option value="draft">草稿</option>
@@ -99,7 +99,7 @@
                   <div style="font-weight:600; font-size:14px;">产品描述</div>
                   <textarea id="projectsDescription" class="input textarea" rows="6" placeholder="一句话描述这个 app 想做什么；越具体越好（题材、目标人群、核心交互、预期最终形态）"></textarea>
                   <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                    <input id="projectsGitRemoteUrl" class="input" type="text" maxlength="500" placeholder="Git 远端 URL（可选，留空则任务结束不 push）" style="flex:1; min-width:240px; font-size:12px;" />
+                    <input id="projectsGitRemoteUrl" class="input" type="text" maxlength="500" placeholder="Git 远端 URL（可选，留空则任务结束不 push）" style="flex:1; min-width:240px; font-size:12px;"  aria-label="Git 远端 URL（可选，留空则任务结束不 push）"/>
                     <button id="projectsSaveGitRemoteBtn" class="btn-inline" type="button" style="font-size:12px;">保存 git 远端</button>
                   </div>
                   <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
