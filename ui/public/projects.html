@@ -54,7 +54,7 @@
               </div>
               <div style="padding:6px 10px; display:flex; flex-direction:column; gap:6px; border-bottom:1px solid var(--border,#ececf0);">
                 <input id="projectsFilterSearch" type="search" class="input" placeholder="按名称搜索…" style="font-size:12px; padding:6px 8px; margin:0;"  aria-label="按名称搜索…"/>
-                <select id="projectsFilterStatus" class="input" style="font-size:12px; padding:6px 8px;">
+                <select id="projectsFilterStatus" class="input" style="font-size:12px; padding:6px 8px;" aria-label="按状态筛选项目">
                   <option value="">所有状态</option>
                   <option value="draft">草稿</option>
                   <option value="planning">规划中</option>
@@ -63,7 +63,7 @@
                   <option value="shipped">已发布</option>
                   <option value="archived">已归档</option>
                 </select>
-                <select id="projectsFilterCodeProvider" class="input" style="font-size:12px; padding:6px 8px;">
+                <select id="projectsFilterCodeProvider" class="input" style="font-size:12px; padding:6px 8px;" aria-label="按代码托管方筛选">
                   <option value="">所有编码工具</option>
                   <option value="kimi">kimi-cli</option>
                   <option value="claude">claude</option>
@@ -97,7 +97,7 @@
                 <!-- 描述 + decompose -->
                 <section style="display:flex; flex-direction:column; gap:10px;">
                   <div style="font-weight:600; font-size:14px;">产品描述</div>
-                  <textarea id="projectsDescription" class="input textarea" rows="6" placeholder="一句话描述这个 app 想做什么；越具体越好（题材、目标人群、核心交互、预期最终形态）"></textarea>
+                  <textarea id="projectsDescription" class="input textarea" rows="6" placeholder="一句话描述这个 app 想做什么；越具体越好（题材、目标人群、核心交互、预期最终形态）" aria-label="产品描述"></textarea>
                   <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                     <input id="projectsGitRemoteUrl" class="input" type="text" maxlength="500" placeholder="Git 远端 URL（可选，留空则任务结束不 push）" style="flex:1; min-width:240px; font-size:12px;"  aria-label="Git 远端 URL（可选，留空则任务结束不 push）"/>
                     <button id="projectsSaveGitRemoteBtn" class="btn-inline" type="button" style="font-size:12px;">保存 git 远端</button>
@@ -112,10 +112,10 @@
                   </div>
                   <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                     <button id="projectsSaveDescBtn" class="btn-inline btn-secondary" type="button">保存描述</button>
-                    <select id="projectsDecomposeBotSelect" class="input" style="width:auto; padding:6px 8px; font-size:12px;" title="用 bot 拆解会带上它的 system_prompt 作为人格（可在 bots 页编辑），覆盖 LLM 选择">
+                    <select id="projectsDecomposeBotSelect" class="input" style="width:auto; padding:6px 8px; font-size:12px;" title="用 bot 拆解会带上它的 system_prompt 作为人格（可在 bots 页编辑），覆盖 LLM 选择" aria-label="拆解用 Bot">
                       <option value="">Bot 角色（可选）</option>
                     </select>
-                    <select id="projectsDecomposeLLMSelect" class="input" style="width:auto; padding:6px 8px; font-size:12px;" title="未选 bot 时直接用此 LLM；选了 bot 则忽略此项">
+                    <select id="projectsDecomposeLLMSelect" class="input" style="width:auto; padding:6px 8px; font-size:12px;" title="未选 bot 时直接用此 LLM；选了 bot 则忽略此项" aria-label="拆解用 LLM">
                       <option value="">拆解用 LLM（自动选）</option>
                     </select>
                     <button id="projectsDecomposeBtn" class="btn-inline btn-secondary" type="button" style="background:#3a7;color:#fff;">AI 拆解功能 →</button>
@@ -146,7 +146,7 @@
                       任务 <span id="projectsTasksCount" style="color:var(--text-muted,#888); font-size:12px; font-weight:400;"></span>
                     </div>
                     <span style="flex:1;"></span>
-                    <select id="projectsDispatchAllBot" class="input" style="width:auto; padding:6px 8px; font-size:12px;">
+                    <select id="projectsDispatchAllBot" class="input" style="width:auto; padding:6px 8px; font-size:12px;" aria-label="批量派发目标 Bot">
                       <option value="">选 bot…</option>
                     </select>
                     <button id="projectsDispatchAllBtn" class="btn-inline btn-secondary" type="button" style="font-size:12px;">🚀 派全部 todos</button>
@@ -252,7 +252,7 @@
 
           <fieldset style="border:1px solid var(--border,#ececf0); border-radius:6px; padding:10px; display:flex; flex-direction:column; gap:8px;">
             <legend style="font-size:12px; padding:0 6px;">＋ 新建 agent</legend>
-            <input id="agentTokenName" class="input" type="text" placeholder="名字 (例: my-mac / linux-runner-1)" maxlength="60" style="font-size:12px;" />
+            <input id="agentTokenName" class="input" type="text" placeholder="名字 (例: my-mac / linux-runner-1)" maxlength="60" style="font-size:12px;"  aria-label="agent 名称"/>
             <div style="display:flex; gap:14px; align-items:center; padding:4px 0; flex-wrap:wrap;">
               <span style="font-size:12px; color:var(--text-muted,#888); white-space:nowrap;">部署目标：</span>
               <label style="display:flex; gap:6px; align-items:center; cursor:pointer; font-size:12px;">
@@ -284,7 +284,7 @@
 
             <div>
               <div style="font-size:11px; color:var(--text-muted,#888); margin-bottom:4px;">一键安装脚本（在 agent host 上跑，含 token + coder 安装 + auth 提示）：</div>
-              <textarea id="agentTokenInstallScript" readonly spellcheck="false" rows="10" style="font-family:ui-monospace,SFMono-Regular,monospace; font-size:11px; width:100%; box-sizing:border-box; background:#fff; border:1px solid #f5d28a; border-radius:4px; padding:8px;"></textarea>
+              <textarea id="agentTokenInstallScript" readonly spellcheck="false" rows="10" style="font-family:ui-monospace,SFMono-Regular,monospace; font-size:11px; width:100%; box-sizing:border-box; background:#fff; border:1px solid #f5d28a; border-radius:4px; padding:8px;" aria-label="安装脚本"></textarea>
               <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
                 <button id="agentTokenScriptCopyBtn" class="btn-inline btn-secondary" type="button" style="font-size:12px;">复制脚本</button>
                 <button id="agentTokenScriptDownloadBtn" class="btn-inline btn-secondary" type="button" style="font-size:12px;">下载 install.sh</button>
